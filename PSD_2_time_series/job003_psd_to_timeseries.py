@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 import pickle as pkl
 from utils import *
+import matplotlib.pyplot as plt
 from plotting_functions import *
 
 # Load the measured spectrum in a data frame
@@ -94,10 +95,10 @@ plt.xlim(0, 30)
 plt.yscale('log')
 plt.ylim(1e-13, 1e-9)
 plt.legend(loc=1)
-plt.show()
+#plt.show()
 
-saveflag = False
+saveflag = True
 if saveflag:
-    with open('PN_realNoise_v3.pkl', 'wb') as f2:
+    with open('output_1e4turns/PN_realNoise_v1.pkl', 'wb') as f2:
         pkl.dump(np.real(signal_new), f2)
     f2.close()

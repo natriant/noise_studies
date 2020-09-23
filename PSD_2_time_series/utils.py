@@ -44,3 +44,30 @@ def ssb_2_dsb(L):
 
     S = 2*10**(L/10)
     return S
+
+
+def find_closest_to_given_value(my_array, my_value):
+    k = my_array[min(range(len(my_array)), key=lambda i: abs(my_array[i] - my_value))]
+    return k
+
+
+def find_index_for_value(my_array, my_value):
+    my_index = [i for i in range(len(my_array)) if my_array[i] == my_value]
+    return my_index[0]
+
+
+def find_average_psd_around_freq(freq_list, sxx_list, my_freq, step):
+    closest_to_fb = find_closest_to_given_value(freq_list, my_freq)
+    closest_to_fb_index = find_index_for_value(freq_list, closest_to_fb)
+
+    # Define the range of frequency values for averaging the PSD values
+    fb_min, fb_max = my_freq - step, my_freq + step
+    closest_to_fb_min = find_closest_to_given_value(freq_list, fb_min)
+    closest_to_fb_min_index = find_index_for_value(freq_list, closest_to_fb_min)
+    closest_to_fb_max = find_closest_to_given_value(freq_list, fb_max)
+    closest_to_fb_max_index = find_index_for_value(freq_list, closest_to_fb_max)
+
+    my_mean = np.mean(sxx_list[closest_to_fb_min_index:closest_to_fb_max_index])
+    my_std = np.std(sxx_list[closest_to_fb_min_index:closest_to_fb_max_index])
+
+    return my_mean, my_std
