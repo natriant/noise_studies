@@ -1,18 +1,23 @@
 import numpy as np
 import pandas as pd
 import pickle as pkl
+import sys
 from utils import *
 import matplotlib.pyplot as plt
 from plotting_functions import *
 
+saveflag = False # if save data don't show plot
+
 # Load the measured spectrum in a data frame
-path_to_data = '/home/natalia/quatantine_phd/From_Themis_and_Phillipe/measured_noise_spectrum/recieved_1Sep2020/'
-file_name = 'coast4EX-0dBm.csv'
+path_to_data = '/home/natalia/quarantine_phd/From_Themis_and_Phillipe/measured_noise_spectrum/recieved_1Sep2020/'
+file_name = 'coast4EX-0dBm.csv' #'coast4EX-0dBm.csv'
 df = pd.read_csv(path_to_data + file_name)
-print('Dictionary keys {}'.format(df.keys()))
+df_keys = df.keys()
+print('Dictionary keys: {}'.format(df_keys))
+
 
 # Convert the SSB, dBc/Hz, to DSB, rad^2/Hz
-Sxx_load = ssb_2_dsb(np.array(df['Phase Noise (dBc/Hz)'])) # PSD in rad^2/Hz
+Sxx_load = ssb_2_dsb(np.array(df['{}'.format(df_keys[1])])) # PSD in rad^2/Hz
 freq_load = np.array(df['Offset Frequency (Hz)'])  # equally spaced in logarithmic scale
 
 # keep the values up to 43.45e3 kHz
@@ -23,9 +28,9 @@ print(freq_load[-1])
 #plot_measured_NoiseSpectrums(Sxx_load, freq_load, 3, 'PN', 'C', savefig=False)
 
 # Linear interpolation of the frequency array, such as the values are equally spaced linearly
-N, frev = 10001, 43.45e3 # number of points, 1002 such as the length of freq_pos is odd
+N, frev = 500001, 43.45e3 # number of points, 1002 such as the length of freq_pos is odd
 t = np.linspace(0, N/43.45e3, N)  # time in seconds
-delta_t = t[1]-t[0] # this should be fixed
+delta_t = t[1]-t[0]  # this should be fixed
 #freq = np.linspace(0, N/t[-1], N) # [0, 2frev]
 freq = np.fft.fftfreq(N, delta_t)  # positive and negative frequencies
 delta_f = freq[1]-freq[0]
@@ -45,7 +50,6 @@ plt.plot(freq_load/1000, Sxx_load, c='C0', label='original psd')
 plt.plot(freq_pos/1000, Sxx, '--', c='C1', label='linear interpolant')
 plt.yscale('log')
 plt.legend()
-plt.show()
 
 # Go back to time series
 fft_amplitude = np.sqrt(Sxx*delta_f*(N**2))
@@ -95,10 +99,12 @@ plt.xlim(0, 30)
 plt.yscale('log')
 plt.ylim(1e-13, 1e-9)
 plt.legend(loc=1)
-#plt.show()
+if not saveflag:
+    plt.show()
 
-saveflag = True
+
+run_n = sys.argv[1]
 if saveflag:
-    with open('output_1e4turns/PN_realNoise_v1.pkl', 'wb') as f2:
+    with open('output/PN_realNoise_v{}.pkl'.format(run_n), 'wb') as f2:
         pkl.dump(np.real(signal_new), f2)
     f2.close()

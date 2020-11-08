@@ -7,7 +7,7 @@ def compute_PSD_whiteNoise(N, frev, muNoise, stdNoise):
     freq = np.fft.fftfreq(N, delta_t)
     delta_f = freq[1] - freq[0]
     print('sampling Delta t = {} s'.format(delta_t))
-    print('sampling frequency Delta f = {} s'.format(delta_f))
+    print('frequency resolution, Delta f = {} s'.format(delta_f))
 
     #### Iterate over 1000 times to increase the precision of the FFT
     fft_list = []
@@ -27,7 +27,7 @@ def compute_PSD(signal, N, frev):
     freq = np.fft.fftfreq(N, delta_t)
     delta_f = freq[1] - freq[0]
     print('sampling Delta t = {} s'.format(delta_t))
-    print('sampling frequency Delta f = {} s'.format(delta_f))
+    print('resolution frequency, Delta f = {} s'.format(delta_f))
     fft = np.fft.fft(signal)
     psd = np.abs(fft)**2/(delta_f*(N**2))
 
