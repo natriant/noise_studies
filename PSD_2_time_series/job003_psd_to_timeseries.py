@@ -6,7 +6,7 @@ from utils import *
 import matplotlib.pyplot as plt
 from plotting_functions import *
 
-saveflag = False # if save data don't show plot
+saveflag = False  # if save data don't show plot
 
 # Load the measured spectrum in a data frame
 path_to_data = '/home/natalia/quarantine_phd/From_Themis_and_Phillipe/measured_noise_spectrum/recieved_1Sep2020/'
@@ -28,8 +28,11 @@ print(freq_load[-1])
 #plot_measured_NoiseSpectrums(Sxx_load, freq_load, 3, 'PN', 'C', savefig=False)
 
 # Linear interpolation of the frequency array, such as the values are equally spaced linearly
-N, frev = 500001, 43.45e3 # number of points, 1002 such as the length of freq_pos is odd
-t = np.linspace(0, N/43.45e3, N)  # time in seconds
+clight = 299792458 # m/s
+circumference = 6911.5623
+frev = clight/circumference # Hz
+N = 500001  # number of samples (odd)
+t = np.linspace(0, N/frev, N)  # time in seconds
 delta_t = t[1]-t[0]  # this should be fixed
 #freq = np.linspace(0, N/t[-1], N) # [0, 2frev]
 freq = np.fft.fftfreq(N, delta_t)  # positive and negative frequencies
@@ -58,7 +61,7 @@ fft_amplitude = np.sqrt(Sxx*delta_f*(N**2))
 phi = 2*np.pi*np.random.uniform(0, 1, int(len(freq_pos)))
 
 # Create the new FFT
-fft_2 = fft_amplitude*np.exp(1j*phi) # note, this does contain the zero frequency term. a[1:N//2]
+fft_2 = fft_amplitude*np.exp(1j*phi)  # note, this does contain the zero frequency term. a[1:N//2]
 plt.figure()
 plt.plot(np.imag(fft_2), '.')
 plt.ylabel('angles (rad)')
